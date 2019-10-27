@@ -6,6 +6,8 @@ import yukon.util.PacketUtils;
 
 public class XTHandler {
 	
+	public static int penguinId;
+	public static String penguinUsername;
 	public static void handleXTPacket(String packet, Socket socket) throws Exception{
 		
 		if(packet.contains("j#js")) sendJoinServerPacket(socket);
@@ -18,9 +20,10 @@ public class XTHandler {
 		
 	}
 
-	public static void sendLoginPacket(int penguinID, String loginKey, String friends, int population, Socket socket) throws Exception {
-		
+	public static void sendLoginPacket(int penguinID, String loginKey, String friends, int population, String penguinName, Socket socket) throws Exception {
+		penguinUsername = penguinName;
 		PacketHandler.sendRawPacket(PacketUtils.buildXTPacket("l", penguinID, loginKey, friends, population), socket);
+		penguinId = penguinID;
 		
 	}
 	
@@ -47,15 +50,15 @@ public class XTHandler {
 	
 	public static void sendLoadPenguinPacket(Socket socket) throws Exception {
 		
-		PacketHandler.sendRawPacket(PacketUtils.buildXTPacket("lp", "testing", 100, "", 1440, (System.currentTimeMillis()/1000L), 7, 0, 7), socket);
+		PacketHandler.sendRawPacket(PacketUtils.buildXTPacket("lp", penguinUsername, penguinId, "", 1440, (System.currentTimeMillis()/1000L), 7, 0, 7), socket);
 		
 	}
 	
 	public static void sendJoinRoomPacket(int roomID, Socket socket) throws Exception{
 		
 		PacketHandler.sendRawPacket(PacketUtils.buildXTPacket("jx", -1, 100), socket);
-		PacketHandler.sendRawPacket(PacketUtils.buildXTPacket("jr", -1, 100, "100|testing|45|35|407|0|0|0|756|0|8818|8812|0|0|1|1|921"), socket); //the 100| thing is the player string, it carries things like what the penguin is wearing.
-		PacketHandler.sendRawPacket(PacketUtils.buildXTPacket("ap", -1, "100|testing|45|35|407|0|0|0|756|0|8818|8812|0|0|1|1|921"), socket);
+		PacketHandler.sendRawPacket(PacketUtils.buildXTPacket("jr", -1, 100, penguinId + "|" +penguinUsername + "|45|35|407|0|0|0|756|0|8818|8812|0|0|1|1|921"), socket); //the 100| thing is the player string, it carries things like what the penguin is wearing.
+		PacketHandler.sendRawPacket(PacketUtils.buildXTPacket("ap", -1, penguinId + "|" +penguinUsername + "|45|35|407|0|0|0|756|0|8818|8812|0|0|1|1|921"), socket);
 		
 	}
 	
@@ -77,9 +80,8 @@ public class XTHandler {
 	public static void sendMailGetPacket(Socket socket) throws Exception{ 
 		PacketHandler.sendRawPacket(PacketUtils.buildXTPacket("mg", -1), socket); //there should be stuff after -1 but idk how to do itso
 	}
-	public static void sendGetPlayerPacket(Socket socket) throws Exception{ 
-		int penguinId = 100; //this should be set to an actual penguinID later!!
-		PacketHandler.sendRawPacket(PacketUtils.buildXTPacket("gp", 55, penguinId + "|testing|45|35|407|0|0|0|756|0|8818|8812|0|0|1|1|921"), socket); //there should be stuff after -1 but idk how to do itso
+	public static void sendGetPlayerPacket(Socket socket) throws Exception{  //this should be set to an actual penguinID later!!
+		PacketHandler.sendRawPacket(PacketUtils.buildXTPacket("gp", 55, penguinId + "|" +penguinUsername + "|45|35|407|0|0|0|756|0|8818|8812|0|0|1|1|921"), socket); //there should be stuff after -1 but idk how to do itso
 	}
 	
 }
